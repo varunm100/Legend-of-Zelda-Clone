@@ -171,16 +171,6 @@ namespace AttackSystem
 
             zelda.Update(gameTime, octorokList, zeldaEnemy, true);
             zelda1.Update(gameTime, octorokList, zelda1Enemy, true);
-
-            if (Keyboard.GetState().IsKeyDown(Keys.F1))
-            {
-                zelda.health = zelda.totalHealth;
-            }
-
-            if (Keyboard.GetState().IsKeyDown(Keys.F2))
-            {
-                zelda1.health = zelda1.totalHealth;
-            }
             
             base.Update(gameTime);
         }
