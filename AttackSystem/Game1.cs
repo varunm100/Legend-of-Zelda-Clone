@@ -1,4 +1,5 @@
-﻿using Microsoft.Xna.Framework;
+﻿using FarseerPhysics.Dynamics;
+using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
 using System;
@@ -14,11 +15,16 @@ namespace AttackSystem
         public static float windowWidth;
         public static float windowHeight;
 
+        public static Texture2D whiteTexture;
         Player zelda;
-        Octorok octorok;
+        List<Octorok> octorokList = new List<Octorok>();
+        int numOctorok = 8;
         AnimatedSprite animatedSprite;
+        int enemyAStarCount = 0;
         public static SpriteFont mainFont;
-        
+        const float unitToPixel = 100.0f;
+        const float pixelToUnit = 1 / unitToPixel;
+
         public Game1()
         {
             graphics = new GraphicsDeviceManager(this);
@@ -72,13 +78,14 @@ namespace AttackSystem
             //positionList.Add(new Vector2(20,20));
             //positionList.Add(new Vector2(100, windowHeight));
             //positionList.Add(new Vector2(windowWidth/2, windowHeight/2));
-            List<Vector2> path = aStar.getPath(new Vector2(0, 0), new Vector2(windowWidth / 2, windowHeight / 2));
-            foreach (var i in path)
+            List<Vector2> path = aStar.getPath(new Vector2(0, 0), zelda.position);
+
+            for (int i = 0; i < numOctorok; i++)
             {
-                Console.WriteLine(i.X.ToString() + ", " + i.Y.ToString());
+                octorokList.Add(new Octorok(this.Content.Load<Texture2D>("octorok-0"), new Vector2(i * (windowWidth / numOctorok), 0), path));
             }
-            octorok = new Octorok(this.Content.Load<Texture2D>("octorok-0"), new Vector2(0,0), path);
-            octorok.startWalkLoop();
+            whiteTexture = new Texture2D(GraphicsDevice, 1, 1);
+            whiteTexture.SetData(new Color[] { Color.White });
         }
 
         protected override void UnloadContent()
@@ -93,8 +100,29 @@ namespace AttackSystem
             if (GamePad.GetState(PlayerIndex.One).Buttons.Back == ButtonState.Pressed || Keyboard.GetState().IsKeyDown(Keys.Escape))
                 Exit();
 
-            zelda.Update(gameTime, new Rectangle((int)octorok.position.X, (int)octorok.position.Y, (int)(octorok.texture.Bounds.Width*octorok.scaleDivisor), (int)(octorok.texture.Bounds.Height*octorok.scaleDivisor)));
-            octorok.updatePosition(gameTime);
+            for (int i = 0; i < octorokList.Count; i++)
+            {
+                octorokList[i].mainCollider = new Rectangle((int)octorokList[i].position.X, (int)octorokList[i].position.Y, (int)(octorokList[i].texture.Bounds.Width * octorokList[i].scaleDivisor), (int)(octorokList[i].texture.Bounds.Height * octorokList[i].scaleDivisor));
+            }
+            zelda.Update(gameTime, octorokList);
+            for (int i = 0; i < octorokList.Count; i++)
+            {
+                octorokList[i].goToAllPositions();
+                octorokList[i].startPathFinding(zelda.position);
+                enemyAStarCount += 1;
+                if (enemyAStarCount % 2 == 0)
+                {
+                    octorokList[i].listPosition = aStar.getPath(octorokList[i].position, zelda.position);
+                    octorokList[i].moving = true;
+                    octorokList[i].currentPositionIndex = 0;
+                    enemyAStarCount = 0;
+                }
+                if (!octorokList[i].alive)
+                {
+                    octorokList.RemoveAt(i);
+                }
+            }
+
             base.Update(gameTime);
         }
 
@@ -103,8 +131,11 @@ namespace AttackSystem
             GraphicsDevice.Clear(Color.Black);
 
             spriteBatch.Begin(new SpriteSortMode(), null, SamplerState.PointClamp, null, null);
-            zelda.Draw(spriteBatch);
-            octorok.Draw(spriteBatch);
+            zelda.Draw(spriteBatch, octorokList, gameTime);
+            for (int i = 0; i < octorokList.Count; i++)
+            {
+                octorokList[i].Draw(spriteBatch);
+            }
             spriteBatch.End();
 
             base.Draw(gameTime);
