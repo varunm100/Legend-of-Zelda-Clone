@@ -35,8 +35,8 @@ namespace AttackSystem
 
         bool usingSword = false;
         bool blink = false;
-        Rectangle swordCollider;
-        Rectangle playerCollider;
+        public Rectangle swordCollider;
+        public Rectangle playerCollider;
 
         Texture2D swordTexturePlayer;
         Texture2D upSword;
@@ -49,17 +49,30 @@ namespace AttackSystem
         Texture2D rightProjectile;
         Texture2D leftProjectile;
 
-        public int health = 50;
-        public int swordDamage = 15;
+        public int totalHealth = 100;
+        public int health = 100;
+        public int swordDamage = 14;
+        public int projectileDamage = 28;
         bool dead = false;
         bool swordJabbed = false;
 
+        public Keys up;
+        public Keys down;
+        public Keys right;
+        public Keys left;
+        public Keys space;
+        public Keys lshift;
+
+        public String hitOrientation;
+
         List<SwordProjectile> swordProjectileList = new List<SwordProjectile>();
-        int countBlink = 120;
+        const int initialCountBlink = 120;
+        public int countBlink = initialCountBlink;
 
         float playerVelocity = 0;
 
-        String orientation = "down";
+        public String orientation = "down";
+        public List<int> removeIndex = new List<int>();
 
         public Player(Texture2D _texture, Vector2 _position, float _rotation, float targetX, float targetY)
         {
@@ -95,9 +108,9 @@ namespace AttackSystem
                 position.X = 0;
             }
 
-            if (position.X > Game1.windowWidth)
+            if (position.X > Game1.windowWidth - 30)
             {
-                position.X = Game1.windowWidth;
+                position.X = Game1.windowWidth - 30;
             }
 
             if (position.Y < 0)
@@ -105,9 +118,9 @@ namespace AttackSystem
                 position.Y = 0;
             }
 
-            if (position.Y > Game1.windowHeight)
+            if (position.Y > Game1.windowHeight - 30)
             {
-                position.Y = Game1.windowHeight;
+                position.Y = Game1.windowHeight - 30;
             }
         }
 
@@ -121,7 +134,7 @@ namespace AttackSystem
             //{
             //    Console.WriteLine("Cool Down Time Started!");
             //}
-            if (Keyboard.GetState().IsKeyDown(Keys.Right))
+            if (Keyboard.GetState().IsKeyDown(right))
             {
                 position += new Vector2(moveSpeed, 0) * (float)gameTime.ElapsedGameTime.TotalSeconds;
                 orientation = "right";
@@ -130,7 +143,7 @@ namespace AttackSystem
 
                 leftAnimation.playing = false; upAnimation.playing = false; downAnimation.playing = false;
             }
-            else if (Keyboard.GetState().IsKeyDown(Keys.Left))
+            else if (Keyboard.GetState().IsKeyDown(left))
             {
                 position += new Vector2(-moveSpeed, 0) * (float)gameTime.ElapsedGameTime.TotalSeconds;
                 orientation = "left";
@@ -139,7 +152,7 @@ namespace AttackSystem
 
                 rightAnimation.playing = false; upAnimation.playing = false; downAnimation.playing = false;
             }
-            else if (Keyboard.GetState().IsKeyDown(Keys.Up))
+            else if (Keyboard.GetState().IsKeyDown(up))
             {
                 position += new Vector2(0, -moveSpeed) * (float)gameTime.ElapsedGameTime.TotalSeconds;
                 orientation = "up";
@@ -148,7 +161,7 @@ namespace AttackSystem
 
                 leftAnimation.playing = false; rightAnimation.playing = false; downAnimation.playing = false;
             }
-            else if (Keyboard.GetState().IsKeyDown(Keys.Down))
+            else if (Keyboard.GetState().IsKeyDown(down))
             {
                 position += new Vector2(0, moveSpeed) * (float)gameTime.ElapsedGameTime.TotalSeconds;
                 orientation = "down";
@@ -156,7 +169,7 @@ namespace AttackSystem
                 playerVelocity = moveSpeed;
 
                 leftAnimation.playing = false; upAnimation.playing = false; rightAnimation.playing = false;
-            } else if (Keyboard.GetState().IsKeyDown(Keys.Space))
+            } else if (Keyboard.GetState().IsKeyDown(space))
             {
                 usingSword = true;
                 switch (orientation)
@@ -184,57 +197,58 @@ namespace AttackSystem
 
             }
 
-            if (currentState.IsKeyUp(Keys.Right) && oldState.IsKeyDown(Keys.Right))
+            if (currentState.IsKeyUp(right) && oldState.IsKeyDown(right))
             {
                 rightAnimation.playing = false;
                 playerVelocity = 0;
             }
 
-            if (currentState.IsKeyUp(Keys.Left) && oldState.IsKeyDown(Keys.Left))
+            if (currentState.IsKeyUp(left) && oldState.IsKeyDown(left))
             {
                 leftAnimation.playing = false;
                 playerVelocity = 0;
             }
 
-            if (currentState.IsKeyUp(Keys.Up) && oldState.IsKeyDown(Keys.Up))
+            if (currentState.IsKeyUp(up) && oldState.IsKeyDown(up))
             {
                 upAnimation.playing = false;
                 playerVelocity = 0;
             }
 
-            if (currentState.IsKeyUp(Keys.Down) && oldState.IsKeyDown(Keys.Down))
+            if (currentState.IsKeyUp(down) && oldState.IsKeyDown(down))
             {
                 downAnimation.playing = false;
                 playerVelocity = 0;
             }
 
-            if (currentState.IsKeyUp(Keys.Space) && oldState.IsKeyDown(Keys.Space))
+            if (currentState.IsKeyUp(space) && oldState.IsKeyDown(space))
             {
                 usingSword = false;
                 swordJabbed = false;
             }
 
-            if (currentState.IsKeyDown(Keys.LeftShift) && allowShoot)
+            if (currentState.IsKeyDown(lshift) && allowShoot)
             {
                 switch (orientation)
                 {
                     case "up":
-                        swordProjectileList.Add(new SwordProjectile(_texture: upProjectile, _velocity: new Vector2(0, -projectileSpeed - playerVelocity),_position: this.position));
+                        swordProjectileList.Add(new SwordProjectile(_texture: upProjectile, _velocity: new Vector2(0, -projectileSpeed - playerVelocity),_position: this.position, _orientation: this.orientation));
                         break;
                     case "down":
-                        swordProjectileList.Add(new SwordProjectile(_texture: downProjectile, _velocity: new Vector2(0, projectileSpeed + playerVelocity), _position: this.position));
+                        swordProjectileList.Add(new SwordProjectile(_texture: downProjectile, _velocity: new Vector2(0, projectileSpeed + playerVelocity), _position: this.position, _orientation: this.orientation));
                         break;
                     case "right":
-                        swordProjectileList.Add(new SwordProjectile(_texture: rightProjectile, _velocity: new Vector2(projectileSpeed + playerVelocity, 0), _position: this.position));
+                        swordProjectileList.Add(new SwordProjectile(_texture: rightProjectile, _velocity: new Vector2(projectileSpeed + playerVelocity, 0), _position: this.position, _orientation: this.orientation));
                         break;
                     case "left":
-                        swordProjectileList.Add(new SwordProjectile(_texture: leftProjectile, _velocity: new Vector2(-projectileSpeed-playerVelocity, 0), _position: this.position));
+                        swordProjectileList.Add(new SwordProjectile(_texture: leftProjectile, _velocity: new Vector2(-projectileSpeed-playerVelocity, 0), _position: this.position, _orientation: this.orientation));
                         break;
                 }
+                swordProjectileList[swordProjectileList.Count - 1].orientation = this.orientation.ToString().ToLower();
                 allowShoot = false;
             }
 
-            if (currentState.IsKeyUp(Keys.LeftShift) && oldState.IsKeyDown(Keys.LeftShift))
+            if (currentState.IsKeyUp(lshift) && oldState.IsKeyDown(lshift))
             {
                 
             }
@@ -259,105 +273,149 @@ namespace AttackSystem
             oldState = currentState;
         }
 
-        public void Update(GameTime gameTime, List<Octorok> enemyCollider)
+        public void Update(GameTime gameTime, List<Octorok> enemyCollider, List<Player> enemyPlayer, bool handleInputbool)
         {
             playerCollider = new Rectangle((int)this.position.X + 5, (int)this.position.Y + 1, (int)(upAnimation.textureList[0].Width * 1.9f), (int)(upAnimation.textureList[0].Height * 1.9f));
             updateOrigin();
             checkBounds();
             if (!blink)
             {
-                handleInput(gameTime);
+                if (handleInputbool)
+                {
+                    handleInput(gameTime);
+                }
             } else
             {
                 rightAnimation.playing = false; leftAnimation.playing = false; upAnimation.playing = false; downAnimation.playing = false;
             }
 
-            for (int i = 0; i < swordProjectileList.Count; i++)
+            if (enemyCollider.Any())
             {
-                for (int j = 0; j < enemyCollider.Count; j++)
+                removeIndex.Clear();
+                for (int i = 0; i < swordProjectileList.Count; i++)
                 {
-                    try
+                    for (int j = 0; j < enemyCollider.Count; j++)
                     {
-                        if (swordProjectileList[i].checkCollision(enemyCollider[j].mainCollider))
+                        try
                         {
-                            swordProjectileList.RemoveAt(i);
-                            enemyCollider[j].health -= this.swordDamage;
-                            if (enemyCollider[j].health <= 0)
+                            if (swordProjectileList[i].checkCollision(enemyCollider[j].mainCollider))
                             {
-                                enemyCollider[j].alive = false;
+                                swordProjectileList.RemoveAt(i);
+                                enemyCollider[j].health -= this.swordDamage;
+                                if (enemyCollider[j].health <= 0)
+                                {
+                                    enemyCollider[j].alive = false;
+                                }
                             }
                         }
-                    } catch (ArgumentOutOfRangeException)
-                    {
+                        catch (ArgumentOutOfRangeException)
+                        {
 
-                    } finally
-                    {
+                        }
+                        finally
+                        {
 
+                        }
                     }
                 }
-            }
 
-            if (usingSword && !blink && !swordJabbed) {
-                for (int j = 0; j < enemyCollider.Count; j++)
+                if (usingSword && !blink && !swordJabbed)
                 {
-                    try
+                    for (int j = 0; j < enemyCollider.Count; j++)
                     {
                         if (swordCollider.Intersects(enemyCollider[j].mainCollider))
                         {
                             if (!(enemyCollider[j].health - swordDamage <= 0))
                             {
                                 enemyCollider[j].health -= swordDamage;
-                            } else
+                            }
+                            else
                             {
                                 enemyCollider[j].alive = false;
                             }
                             swordJabbed = true;
                         }
                     }
-                    catch (ArgumentOutOfRangeException)
-                    {
+                }
 
+                if (!blink)
+                {
+                    for (int i = 0; i < enemyCollider.Count; i++)
+                    {
+                        if (enemyCollider[i].mainCollider.Intersects(playerCollider))
+                        {
+                            blink = true;
+                            upAnimation.playing = false; downAnimation.playing = false; rightAnimation.playing = false; leftAnimation.playing = false;
+                            enemyCollider[i].playerBlink = true;
+                            playerBlinkIndex = i;
+                            if (!(health - enemyCollider[i].damage <= 0))
+                            {
+                                health -= enemyCollider[i].damage;
+                            }
+                            else
+                            {
+                                dead = true;
+                            }
+                        }
                     }
-                    finally
-                    {
+                }
+            }
 
+            if (enemyPlayer.Any())
+            {
+                removeIndex.Clear();
+                for (int i = 0; i < swordProjectileList.Count; i++)
+                {
+                    for (int j = 0; j < enemyPlayer.Count; j++)
+                    {
+                        if (this.swordProjectileList[i].checkCollision(enemyPlayer[j].playerCollider))
+                        {
+                            enemyPlayer[j].health -= this.projectileDamage;
+                            if (enemyPlayer[j].health <= 0)
+                            {
+                                enemyPlayer[j].dead = true;
+                            }
+                            enemyPlayer[j].blink = true;
+                            enemyPlayer[j].hitOrientation = this.swordProjectileList[i].orientation.ToLower();
+                            removeIndex.Add(i);
+                        }
+                    }
+                }
+
+                foreach (var i in removeIndex)
+                {
+                    swordProjectileList.RemoveAt(i);
+                }
+
+                if (usingSword && !blink && !swordJabbed)
+                {
+                    for (int j = 0; j < enemyPlayer.Count; j++)
+                    {
+                        if (swordCollider.Intersects(enemyPlayer[j].playerCollider))
+                        {
+                            enemyPlayer[j].health -= swordDamage;
+                            if (enemyPlayer[j].health <= 0)
+                            {
+                                enemyPlayer[j].dead = true;
+                            }
+                            swordJabbed = true;
+                            enemyPlayer[j].blink = true;
+                            enemyPlayer[j].hitOrientation = this.orientation;
+                        }
                     }
                 }
             }
 
             upAnimation.Update(); downAnimation.Update(); rightAnimation.Update(); leftAnimation.Update();
-            
-            if (!blink)
-            {
-                for (int i = 0; i < enemyCollider.Count; i++)
-                {
-                    if (enemyCollider[i].mainCollider.Intersects(playerCollider))
-                    {
-                        blink = true;
-                        upAnimation.playing = false; downAnimation.playing = false; rightAnimation.playing = false; leftAnimation.playing = false;
-                        enemyCollider[i].playerBlink = true;
-                        playerBlinkIndex = i;
-                        if (!(health-enemyCollider[i].damage <= 0))
-                        {
-                            health -= enemyCollider[i].damage;
-                        } else
-                        {
-                            dead = true;
-                        }
-                    }
-                }
-            }
         }
 
-        public void Draw(SpriteBatch spriteBatch, List<Octorok> listOctorok, GameTime gameTime)
+        public void Draw(SpriteBatch spriteBatch, List<Octorok> listOctorok, List<Player> enemyPlayer,GameTime gameTime, Color tint)
         {
-            //spriteBatch.Draw(texture: texture, position: position, rotation: rotation, origin: origin, scale : scale);
-            showText(spriteBatch);
             if (!blink)
             {
                 if (upAnimation.playing || downAnimation.playing || rightAnimation.playing || leftAnimation.playing)
                 {
-                    upAnimation.Draw(spriteBatch, position); downAnimation.Draw(spriteBatch, position); rightAnimation.Draw(spriteBatch, position); leftAnimation.Draw(spriteBatch, position);
+                    upAnimation.Draw(spriteBatch, position, tint); downAnimation.Draw(spriteBatch, position, tint); rightAnimation.Draw(spriteBatch, position, tint); leftAnimation.Draw(spriteBatch, position, tint);
                 }
                 else
                 {
@@ -366,16 +424,16 @@ namespace AttackSystem
                         switch (orientation)
                         {
                             case "up":
-                                spriteBatch.Draw(upAnimation.textureList[upAnimation.currentTextureIndex], position: position, scale: scale);
+                                spriteBatch.Draw(upAnimation.textureList[upAnimation.currentTextureIndex], position: position, scale: scale, color: tint);
                                 break;
                             case "down":
-                                spriteBatch.Draw(downAnimation.textureList[downAnimation.currentTextureIndex], position: position, scale: scale);
+                                spriteBatch.Draw(downAnimation.textureList[downAnimation.currentTextureIndex], position: position, scale: scale, color: tint);
                                 break;
                             case "right":
-                                spriteBatch.Draw(rightAnimation.textureList[rightAnimation.currentTextureIndex], position: position, scale: scale);
+                                spriteBatch.Draw(rightAnimation.textureList[rightAnimation.currentTextureIndex], position: position, scale: scale, color: tint);
                                 break;
                             case "left":
-                                spriteBatch.Draw(leftAnimation.textureList[leftAnimation.currentTextureIndex], position: position, scale: scale);
+                                spriteBatch.Draw(leftAnimation.textureList[leftAnimation.currentTextureIndex], position: position, scale: scale, color: tint);
                                 break;
                         }
                     }
@@ -397,13 +455,13 @@ namespace AttackSystem
                                 localSpace = new Vector2(position.X - jumpDistance, position.Y);
                                 break;
                         }
-                        spriteBatch.Draw(swordTexturePlayer, position: localSpace, scale: scale);
+                        spriteBatch.Draw(swordTexturePlayer, position: localSpace, scale: scale, color: tint);
                     }
                 }
 
                 for (int i = 0; i < swordProjectileList.Count; i++)
                 {
-                    swordProjectileList[i].Draw(spriteBatch);
+                    swordProjectileList[i].Draw(spriteBatch, tint);
                 }
             } else
             {
@@ -420,27 +478,28 @@ namespace AttackSystem
                     {
 
                     }
-                    playerBlinkIndex = -1;
+                    countBlink = initialCountBlink;
+                    //playerBlinkIndex = -1;
                 }
                 if (countBlink % 10 == 0)
                 {
-                    switch (orientation)
+                    switch (this.hitOrientation.ToString().ToLower())
                     {
                         case "up":
-                            position += new Vector2(1, 0) * (float)(gameTime.ElapsedGameTime.TotalMilliseconds / 100) * 100;
-                            spriteBatch.Draw(upAnimation.textureList[upAnimation.currentTextureIndex], position: position, scale: scale);
+                            position += new Vector2(0, -1) * (float)(gameTime.ElapsedGameTime.TotalMilliseconds / 100) * 100;
+                            spriteBatch.Draw(upAnimation.textureList[upAnimation.currentTextureIndex], position: position, scale: scale, color: tint);
                             break;
                         case "down":
-                            position += new Vector2(-1, 0) * (float)(gameTime.ElapsedGameTime.TotalMilliseconds / 100) * 100;
-                            spriteBatch.Draw(downAnimation.textureList[downAnimation.currentTextureIndex], position: position, scale: scale);
+                            position += new Vector2(0, 1) * (float)(gameTime.ElapsedGameTime.TotalMilliseconds / 100) * 100;
+                            spriteBatch.Draw(downAnimation.textureList[downAnimation.currentTextureIndex], position: position, scale: scale, color: tint);
                             break;
                         case "right":
-                            position += new Vector2(0, 1) * (float)(gameTime.ElapsedGameTime.TotalMilliseconds / 100) * 100;
-                            spriteBatch.Draw(rightAnimation.textureList[rightAnimation.currentTextureIndex], position: position, scale: scale);
+                            position += new Vector2(1, 0) * (float)(gameTime.ElapsedGameTime.TotalMilliseconds / 100) * 100;
+                            spriteBatch.Draw(rightAnimation.textureList[rightAnimation.currentTextureIndex], position: position, scale: scale, color: tint);
                             break;
                         case "left":
-                            position += new Vector2(0, -1) * (float)(gameTime.ElapsedGameTime.TotalMilliseconds / 100) * 100;
-                            spriteBatch.Draw(leftAnimation.textureList[leftAnimation.currentTextureIndex], position: position, scale: scale);
+                            position += new Vector2(-1, 0) * (float)(gameTime.ElapsedGameTime.TotalMilliseconds / 100) * 100;
+                            spriteBatch.Draw(leftAnimation.textureList[leftAnimation.currentTextureIndex], position: position, scale: scale, color: tint);
                             break;
                     }
                 }
@@ -448,9 +507,9 @@ namespace AttackSystem
             }
         }
 
-        public void showText(SpriteBatch spriteBatch)
+        public static double degreesToRadians(double i)
         {
-            //spriteBatch.DrawString(Game1.mainFont, "Cool Down Time: " + (coolDownTime - coolDownCount).ToString(), position: new Vector2(20,20), color: Color.Blue);
+            return i * (Math.PI / 180);
         }
     }
 }

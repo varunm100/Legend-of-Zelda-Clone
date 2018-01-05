@@ -14,13 +14,15 @@ namespace AttackSystem.Content
         public Vector2 velocity;
         public Vector2 position;
         public Vector2 scale;
+        public String orientation;
 
-        public SwordProjectile(Texture2D _texture, Vector2 _velocity, Vector2 _position, float targetX=10, float targetY=10)
+        public SwordProjectile(Texture2D _texture, Vector2 _velocity, Vector2 _position, String _orientation,float targetX=10, float targetY=10)
         {
             this.texture = _texture;
             this.velocity = _velocity;
             this.position = _position;
             this.scale = new Vector2(2.5f, 2.5f);
+            this.orientation = _orientation;
         }
 
         public void updatePosition(GameTime gameTime)
@@ -33,9 +35,9 @@ namespace AttackSystem.Content
             return (new Rectangle((int)this.position.X,(int) this.position.Y, (int)(this.texture.Width*this.scale.X), (int)(this.texture.Height*this.scale.Y))).Intersects(inCollider);
         }
 
-        public void Draw(SpriteBatch spriteBatch)
+        public void Draw(SpriteBatch spriteBatch, Color tint)
         {
-            spriteBatch.Draw(texture: this.texture, position: this.position, scale: this.scale);
+            spriteBatch.Draw(texture: this.texture, position: this.position, scale: this.scale, color: tint);
         }
     }
 }

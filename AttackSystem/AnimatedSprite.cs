@@ -49,7 +49,7 @@ namespace AttackSystem
             }
         }
 
-        public void Draw(SpriteBatch spriteBatch, Vector2 location)
+        public void Draw(SpriteBatch spriteBatch, Vector2 location, Color tint)
         {
             if (playing)
             {
@@ -59,7 +59,7 @@ namespace AttackSystem
                 }
                 if (!(currentTextureIndex > (textureList.Count - 1)))
                 {
-                    spriteBatch.Draw(textureList[currentTextureIndex], position: location, scale: renderScale);
+                    spriteBatch.Draw(textureList[currentTextureIndex], position: location, scale: renderScale, color: tint);
                 }
                 else
                 {
