@@ -127,13 +127,6 @@ namespace AttackSystem
         public void handleInput(GameTime gameTime)
         {
             KeyboardState currentState = Keyboard.GetState();
-            //if (allowShoot)
-            //{
-            //    Console.WriteLine("Shoot Cool Down Time Over!");
-            //} else
-            //{
-            //    Console.WriteLine("Cool Down Time Started!");
-            //}
             if (Keyboard.GetState().IsKeyDown(right))
             {
                 position += new Vector2(moveSpeed, 0) * (float)gameTime.ElapsedGameTime.TotalSeconds;
@@ -479,7 +472,6 @@ namespace AttackSystem
 
                     }
                     countBlink = initialCountBlink;
-                    //playerBlinkIndex = -1;
                 }
                 if (countBlink % 10 == 0)
                 {

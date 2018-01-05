@@ -89,7 +89,6 @@ namespace AttackSystem
             zelda1 = new Player(this.Content.Load<Texture2D>("mr.square"), new Vector2(windowWidth - 50, windowHeight / 2), 0, 500, 500);
             zelda1.loadContent(upTexture: upTex, downTexture: downTex, leftTexture: leftTex, rightTexture: rightTex, swordDown: _downSword, swordUp: _upSword, swordLeft: _leftSword, swordRight: _rightSword, _upProjectile: _upProjectile, _downProjectile: _downProjectile, _leftProjectile: _leftProjectile, _rightProjectile: _rightProjectile);
 
-
             zelda.up = Keys.W;
             zelda.down = Keys.S;
             zelda.left = Keys.A;
