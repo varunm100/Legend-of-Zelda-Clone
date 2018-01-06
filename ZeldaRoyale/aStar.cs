@@ -1,12 +1,8 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using System.Collections.Generic;
 using RoyT.AStar;
 using Microsoft.Xna.Framework;
 
-namespace AttackSystem
+namespace ZeldaRoyale
 {
     public class aStar
     {

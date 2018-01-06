@@ -1,11 +1,11 @@
-﻿using FarseerPhysics.Dynamics;
-using Microsoft.Xna.Framework;
+﻿using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
 using System;
 using System.Collections.Generic;
 
-namespace AttackSystem
+#pragma warning disable CS0618
+namespace ZeldaRoyale
 {
     public class Game1 : Game
     {
@@ -20,7 +20,6 @@ namespace AttackSystem
         Player zelda1;
         List<Octorok> octorokList = new List<Octorok>();
         int numOctorok = 8;
-        AnimatedSprite animatedSprite;
         int enemyAStarCount = 0;
         public static SpriteFont mainFont;
         public bool spawnOctorok = false;
@@ -29,11 +28,10 @@ namespace AttackSystem
         public float gameOverScaleInt = 1;
         public String winningString = "";
         public int timePerScale = 0;
-        public int totalTime = 20; 
+        public int totalTime = 20;
         Texture2D background;
         Vector2 backgroundScale;
         Texture2D contrastHearts;
-        Vector2 contrastHeartScale;
 
         List<Player> zeldaEnemy = new List<Player>();
         List<Player> zelda1Enemy = new List<Player>();
@@ -84,7 +82,7 @@ namespace AttackSystem
             rightTex.Add(this.Content.Load<Texture2D>("movement/right/right-1"));
             rightTex.Add(this.Content.Load<Texture2D>("movement/right/right-2"));
 
-            zelda = new Player(this.Content.Load<Texture2D>("mr.square"), new Vector2(50, windowHeight/2), 0, 500, 500);
+            zelda = new Player(this.Content.Load<Texture2D>("mr.square"), new Vector2(50, windowHeight / 2), 0, 500, 500);
             zelda.loadContent(upTexture: upTex, downTexture: downTex, leftTexture: leftTex, rightTexture: rightTex, swordDown: _downSword, swordUp: _upSword, swordLeft: _leftSword, swordRight: _rightSword, _upProjectile: _upProjectile, _downProjectile: _downProjectile, _leftProjectile: _leftProjectile, _rightProjectile: _rightProjectile);
             zelda1 = new Player(this.Content.Load<Texture2D>("mr.square"), new Vector2(windowWidth - 50, windowHeight / 2), 0, 500, 500);
             zelda1.loadContent(upTexture: upTex, downTexture: downTex, leftTexture: leftTex, rightTexture: rightTex, swordDown: _downSword, swordUp: _upSword, swordLeft: _leftSword, swordRight: _rightSword, _upProjectile: _upProjectile, _downProjectile: _downProjectile, _leftProjectile: _leftProjectile, _rightProjectile: _rightProjectile);
@@ -125,7 +123,7 @@ namespace AttackSystem
 
         protected override void UnloadContent()
         {
-            
+
         }
 
         protected override void Update(GameTime gameTime)
@@ -165,12 +163,12 @@ namespace AttackSystem
 
             Console.WriteLine("Player 1 Health: " + zelda.health);
             Console.WriteLine("Player 2 Health: " + zelda1.health);
-            if (zelda.health <= 0 && !gameOver) { Console.WriteLine("Player 2 Wins!"); gameOver = true; winningString = "BOOM! P2 RECKS P1!"; }
-            if (zelda1.health <= 0 && !gameOver) { Console.WriteLine("Player 1 Wins!"); gameOver = true; winningString = "BOOM! P1 RECKS P2"; }
+            if (zelda.dead && !gameOver) { Console.WriteLine("Player 2 Wins!"); gameOver = true; winningString = "BOOM! P2 RECKS P1!"; }
+            if (zelda1.dead && !gameOver) { Console.WriteLine("Player 1 Wins!"); gameOver = true; winningString = "BOOM! P1 RECKS P2"; }
 
             zelda.Update(gameTime, octorokList, zeldaEnemy, true);
             zelda1.Update(gameTime, octorokList, zelda1Enemy, true);
-            
+
             base.Update(gameTime);
         }
 
@@ -196,11 +194,12 @@ namespace AttackSystem
                 Rectangle Zelda1heartsRectangle = new Rectangle((int)(windowWidth - (2 * contrastHearts.Width)), 0, (int)zelda1Width, 2 * contrastHearts.Height);
                 spriteBatch.Draw(whiteTexture, ZeldaheartsRectangle, Color.Red);
                 spriteBatch.Draw(whiteTexture, Zelda1heartsRectangle, Color.Red);
-                spriteBatch.Draw(texture: contrastHearts, position: new Vector2(0,0), scale: new Vector2(2,2));
-                spriteBatch.Draw(texture: contrastHearts, position: new Vector2(windowWidth-(2*contrastHearts.Width), 0), scale: new Vector2(2, 2));
-            } else
+                spriteBatch.Draw(texture: contrastHearts, position: new Vector2(0, 0), scale: new Vector2(2, 2));
+                spriteBatch.Draw(texture: contrastHearts, position: new Vector2(windowWidth - (2 * contrastHearts.Width), 0), scale: new Vector2(2, 2));
+            }
+            else
             {
-                spriteBatch.DrawString(spriteFont: Game1.mainFont, text: winningString, position: new Vector2((windowWidth / 2)-250, windowHeight / 2), color: Color.Red, rotation: (float)Player.degreesToRadians(1), origin: new Vector2(0, 0), scale: gameOverScaleInt, effects: new SpriteEffects(), layerDepth: 1);
+                spriteBatch.DrawString(spriteFont: Game1.mainFont, text: winningString, position: new Vector2((windowWidth / 2) - 250, windowHeight / 2), color: Color.Red, rotation: (float)Player.degreesToRadians(1), origin: new Vector2(0, 0), scale: gameOverScaleInt, effects: new SpriteEffects(), layerDepth: 1);
                 timePerScale += 1;
                 if (timePerScale % totalTime == 0)
                 {

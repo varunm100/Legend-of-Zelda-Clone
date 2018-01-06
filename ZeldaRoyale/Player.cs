@@ -1,15 +1,13 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
-using AttackSystem.Content;
-using FarseerPhysics.Dynamics;
+using ZeldaRoyale.Content;
 
-namespace AttackSystem
+#pragma warning disable CS0618
+namespace ZeldaRoyale
 {
     class Player
     {
@@ -53,7 +51,7 @@ namespace AttackSystem
         public int health = 100;
         public int swordDamage = 14;
         public int projectileDamage = 28;
-        bool dead = false;
+        public bool dead;
         bool swordJabbed = false;
 
         public Keys up;
@@ -80,6 +78,7 @@ namespace AttackSystem
             this.position = _position;
             this.rotation = _rotation;
             this.scale = new Vector2(2, 2);
+            this.dead = false;
         }
 
         public void updateOrigin() { origin = new Vector2(texture.Bounds.Center.X, texture.Bounds.Center.Y); }
@@ -347,7 +346,7 @@ namespace AttackSystem
                             }
                             else
                             {
-                                dead = true;
+                                this.dead = true;
                             }
                         }
                     }

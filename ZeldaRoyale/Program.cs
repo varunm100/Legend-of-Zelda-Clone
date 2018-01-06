@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace AttackSystem
+namespace ZeldaRoyale
 {
     public static class Program
     {

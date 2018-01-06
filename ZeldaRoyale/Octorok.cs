@@ -1,23 +1,19 @@
 ﻿using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
-using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 
-namespace AttackSystem
+#pragma warning disable CS0618
+namespace ZeldaRoyale
 {
     class Octorok
     {
         public Texture2D texture;
         public Vector2 position;
         Vector2 velocity = Vector2.Zero;
-        Vector2 origin;
         public List<Vector2> listPosition;
         public bool moving = true;
         public int currentPositionIndex;
         public float scaleDivisor = 0.05f;
-        bool destroyed = false;
         float StartrangeRadius = 200;
         float EndrangeRadius = 500;
         public bool startAStar = false;

@@ -1,12 +1,9 @@
 ﻿using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
-using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
-namespace AttackSystem
+#pragma warning disable CS0618
+namespace ZeldaRoyale
 {
     class AnimatedSprite
     {
@@ -59,7 +56,7 @@ namespace AttackSystem
                 }
                 if (!(currentTextureIndex > (textureList.Count - 1)))
                 {
-                    spriteBatch.Draw(textureList[currentTextureIndex], position: location, scale: renderScale, color: tint);
+                    spriteBatch.Draw(texture: textureList[currentTextureIndex], position: location, scale: renderScale, color: tint);
                 }
                 else
                 {
