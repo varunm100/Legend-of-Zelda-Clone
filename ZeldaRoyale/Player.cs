@@ -61,6 +61,9 @@ namespace ZeldaRoyale
         public Keys space;
         public Keys lshift;
 
+        public List<Color> loopColorBlink = new List<Color>();
+        public int blinkColorIndex;
+
         public String hitOrientation;
 
         List<SwordProjectile> swordProjectileList = new List<SwordProjectile>();
@@ -79,6 +82,7 @@ namespace ZeldaRoyale
             this.rotation = _rotation;
             this.scale = new Vector2(2, 2);
             this.dead = false;
+            this.blinkColorIndex = 0;
         }
 
         public void updateOrigin() { origin = new Vector2(texture.Bounds.Center.X, texture.Bounds.Center.Y); }
@@ -478,22 +482,25 @@ namespace ZeldaRoyale
                     {
                         case "up":
                             position += new Vector2(0, -1) * (float)(gameTime.ElapsedGameTime.TotalMilliseconds / 100) * 100;
-                            spriteBatch.Draw(upAnimation.textureList[upAnimation.currentTextureIndex], position: position, scale: scale, color: tint);
+                            spriteBatch.Draw(upAnimation.textureList[upAnimation.currentTextureIndex], position: position, scale: scale, color: loopColorBlink[blinkColorIndex]);
                             break;
                         case "down":
                             position += new Vector2(0, 1) * (float)(gameTime.ElapsedGameTime.TotalMilliseconds / 100) * 100;
-                            spriteBatch.Draw(downAnimation.textureList[downAnimation.currentTextureIndex], position: position, scale: scale, color: tint);
+                            spriteBatch.Draw(downAnimation.textureList[downAnimation.currentTextureIndex], position: position, scale: scale, color: loopColorBlink[blinkColorIndex]);
                             break;
                         case "right":
                             position += new Vector2(1, 0) * (float)(gameTime.ElapsedGameTime.TotalMilliseconds / 100) * 100;
-                            spriteBatch.Draw(rightAnimation.textureList[rightAnimation.currentTextureIndex], position: position, scale: scale, color: tint);
+                            spriteBatch.Draw(rightAnimation.textureList[rightAnimation.currentTextureIndex], position: position, scale: scale, color: loopColorBlink[blinkColorIndex]);
                             break;
                         case "left":
                             position += new Vector2(-1, 0) * (float)(gameTime.ElapsedGameTime.TotalMilliseconds / 100) * 100;
-                            spriteBatch.Draw(leftAnimation.textureList[leftAnimation.currentTextureIndex], position: position, scale: scale, color: tint);
+                            spriteBatch.Draw(leftAnimation.textureList[leftAnimation.currentTextureIndex], position: position, scale: scale, color: loopColorBlink[blinkColorIndex]);
                             break;
                     }
+                    blinkColorIndex += 1;
+                    if (blinkColorIndex >= loopColorBlink.Count) { blinkColorIndex = 0; }
                 }
+
                 countBlink -= 1;
             }
         }

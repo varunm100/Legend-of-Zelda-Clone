@@ -104,6 +104,20 @@ namespace ZeldaRoyale
             zeldaEnemy.Add(zelda1);
             zelda1Enemy.Add(zelda);
 
+            zelda.loopColorBlink.Add(Color.Red);
+            zelda.loopColorBlink.Add(Color.Red);
+            zelda.loopColorBlink.Add(Color.Blue);
+            zelda.loopColorBlink.Add(Color.Blue);
+            zelda.loopColorBlink.Add(Color.Blue);
+            zelda.loopColorBlink.Add(Color.Blue);
+
+            zelda1.loopColorBlink.Add(Color.Red);
+            zelda1.loopColorBlink.Add(Color.Red);
+            zelda1.loopColorBlink.Add(Color.Blue);
+            zelda1.loopColorBlink.Add(Color.Blue);
+            zelda1.loopColorBlink.Add(Color.Blue);
+            zelda1.loopColorBlink.Add(Color.Blue);
+
             List<Vector2> path = aStar.getPath(new Vector2(0, 0), zelda.position);
 
             if (!spawnOctorok)
