@@ -73,6 +73,16 @@ namespace ZeldaRoyale
             Texture2D _leftProjectile = this.Content.Load<Texture2D>("projectiles/sword/sword-projectile-right");
             Texture2D _rightProjectile = this.Content.Load<Texture2D>("projectiles/sword/sword-projectile-left");
 
+            Texture2D _downWand = this.Content.Load<Texture2D>("projectiles/wand/zelda/zelda-wand-down");
+            Texture2D _upWand = this.Content.Load<Texture2D>("projectiles/wand/zelda/zelda-wand-up");
+            Texture2D _leftWand = this.Content.Load<Texture2D>("projectiles/wand/zelda/zelda-wand-left");
+            Texture2D _rightWand = this.Content.Load<Texture2D>("projectiles/wand/zelda/zelda-wand-right");
+
+            Texture2D _downWave = this.Content.Load<Texture2D>("projectiles/wand/wave/zelda-wand-pdown");
+            Texture2D _upWave = this.Content.Load<Texture2D>("projectiles/wand/wave/zelda-wand-pup");
+            Texture2D _rightWave = this.Content.Load<Texture2D>("projectiles/wand/wave/zelda-wand-pright");
+            Texture2D _leftWave = this.Content.Load<Texture2D>("projectiles/wand/wave/zelda-wand-pleft");
+
             upTex.Add(this.Content.Load<Texture2D>("movement/up/up-1"));
             upTex.Add(this.Content.Load<Texture2D>("movement/up/up-2"));
             downTex.Add(this.Content.Load<Texture2D>("movement/down/down-1"));
@@ -83,23 +93,25 @@ namespace ZeldaRoyale
             rightTex.Add(this.Content.Load<Texture2D>("movement/right/right-2"));
 
             zelda = new Player(this.Content.Load<Texture2D>("mr.square"), new Vector2(50, windowHeight / 2), 0, 500, 500);
-            zelda.loadContent(upTexture: upTex, downTexture: downTex, leftTexture: leftTex, rightTexture: rightTex, swordDown: _downSword, swordUp: _upSword, swordLeft: _leftSword, swordRight: _rightSword, _upProjectile: _upProjectile, _downProjectile: _downProjectile, _leftProjectile: _leftProjectile, _rightProjectile: _rightProjectile);
+            zelda.loadContent(upTexture: upTex, downTexture: downTex, leftTexture: leftTex, rightTexture: rightTex, swordDown: _downSword, swordUp: _upSword, swordLeft: _leftSword, swordRight: _rightSword, _upProjectile: _upProjectile, _downProjectile: _downProjectile, _leftProjectile: _leftProjectile, _rightProjectile: _rightProjectile, _upWand: _upWand, _downWand: _downWand, _leftWand: _leftWand, _rightWand: _rightWand, _upWave: _upWave, _downWave: _downWave, _leftWave: _leftWave, _rightWave: _rightWave);
             zelda1 = new Player(this.Content.Load<Texture2D>("mr.square"), new Vector2(windowWidth - 50, windowHeight / 2), 0, 500, 500);
-            zelda1.loadContent(upTexture: upTex, downTexture: downTex, leftTexture: leftTex, rightTexture: rightTex, swordDown: _downSword, swordUp: _upSword, swordLeft: _leftSword, swordRight: _rightSword, _upProjectile: _upProjectile, _downProjectile: _downProjectile, _leftProjectile: _leftProjectile, _rightProjectile: _rightProjectile);
+            zelda1.loadContent(upTexture: upTex, downTexture: downTex, leftTexture: leftTex, rightTexture: rightTex, swordDown: _downSword, swordUp: _upSword, swordLeft: _leftSword, swordRight: _rightSword, _upProjectile: _upProjectile, _downProjectile: _downProjectile, _leftProjectile: _leftProjectile, _rightProjectile: _rightProjectile, _upWand: _upWand, _downWand: _downWand, _leftWand: _leftWand, _rightWand: _rightWand, _upWave: _upWave, _downWave: _downWave, _leftWave: _leftWave, _rightWave: _rightWave);
 
             zelda.up = Keys.W;
             zelda.down = Keys.S;
             zelda.left = Keys.A;
             zelda.right = Keys.D;
-            zelda.lshift = Keys.LeftShift;
-            zelda.space = Keys.LeftAlt;
+            zelda.swordBeamKey = Keys.LeftShift;
+            zelda.swordStrike = Keys.LeftAlt;
+            zelda.wandKey = Keys.LeftControl;
 
             zelda1.up = Keys.P;
             zelda1.down = Keys.OemSemicolon;
             zelda1.left = Keys.L;
             zelda1.right = Keys.OemQuotes;
-            zelda1.lshift = Keys.RightShift;
-            zelda1.space = Keys.RightAlt;
+            zelda1.swordBeamKey = Keys.RightShift;
+            zelda1.swordStrike = Keys.RightAlt;
+            zelda1.wandKey = Keys.RightControl;
 
             zeldaEnemy.Add(zelda1);
             zelda1Enemy.Add(zelda);
@@ -175,10 +187,10 @@ namespace ZeldaRoyale
                 }
             }
 
-            Console.WriteLine("Player 1 Health: " + zelda.health);
-            Console.WriteLine("Player 2 Health: " + zelda1.health);
-            if (zelda.dead && !gameOver) { Console.WriteLine("Player 2 Wins!"); gameOver = true; winningString = "BOOM! P2 RECKS P1!"; }
-            if (zelda1.dead && !gameOver) { Console.WriteLine("Player 1 Wins!"); gameOver = true; winningString = "BOOM! P1 RECKS P2"; }
+            //Console.WriteLine("Player 1 Health: " + zelda.health);
+            //Console.WriteLine("Player 2 Health: " + zelda1.health);
+            if (zelda.dead && !gameOver) { Console.WriteLine("Player 2 Wins!"); gameOver = true; winningString = "BOOM! P2 WRECKS P1!"; }
+            if (zelda1.dead && !gameOver) { Console.WriteLine("Player 1 Wins!"); gameOver = true; winningString = "BOOM! P1 WRECKS P2"; }
 
             zelda.Update(gameTime, octorokList, zeldaEnemy, true);
             zelda1.Update(gameTime, octorokList, zelda1Enemy, true);

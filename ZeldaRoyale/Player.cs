@@ -19,10 +19,14 @@ namespace ZeldaRoyale
         float moveSpeed = 200f;
         float jumpDistance = 25f;
         float projectileSpeed = 250f;
-        bool allowShoot = true;
-        int coolDownTime = 100;
-        int coolDownCount = 0;
-        int playerBlinkIndex;
+        float wandSpeed = 500f;
+        public bool allowShoot = true;
+        public bool allowWand = true;
+        public int coolDownTimeWand = 80;
+        public double coolDownCountWand = 0;
+        public double coolDownTime = 100;
+        public double coolDownCount = 0;
+        public int playerBlinkIndex;
 
         KeyboardState oldState;
 
@@ -33,6 +37,7 @@ namespace ZeldaRoyale
 
         bool usingSword = false;
         bool blink = false;
+        bool usingWand = false;
         public Rectangle swordCollider;
         public Rectangle playerCollider;
 
@@ -42,6 +47,17 @@ namespace ZeldaRoyale
         Texture2D leftSword;
         Texture2D rightSword;
 
+        Texture2D wandTex;
+        Texture2D upWand;
+        Texture2D downWand;
+        Texture2D leftWand;
+        Texture2D rightWand;
+
+        Texture2D upWave;
+        Texture2D downWave;
+        Texture2D rightWave;
+        Texture2D leftWave;
+
         Texture2D upProjectile;
         Texture2D downProjectile;
         Texture2D rightProjectile;
@@ -50,7 +66,8 @@ namespace ZeldaRoyale
         public int totalHealth = 100;
         public int health = 100;
         public int swordDamage = 14;
-        public int projectileDamage = 28;
+        public int projectileDamage = 24;
+        public int wandDamge = 4;
         public bool dead;
         bool swordJabbed = false;
 
@@ -58,8 +75,9 @@ namespace ZeldaRoyale
         public Keys down;
         public Keys right;
         public Keys left;
-        public Keys space;
-        public Keys lshift;
+        public Keys swordStrike;
+        public Keys swordBeamKey;
+        public Keys wandKey;
 
         public List<Color> loopColorBlink = new List<Color>();
         public int blinkColorIndex;
@@ -87,12 +105,13 @@ namespace ZeldaRoyale
 
         public void updateOrigin() { origin = new Vector2(texture.Bounds.Center.X, texture.Bounds.Center.Y); }
 
-        public void loadContent(List<Texture2D> upTexture, List<Texture2D> downTexture, List<Texture2D> rightTexture, List<Texture2D> leftTexture, Texture2D swordUp, Texture2D swordDown, Texture2D swordLeft, Texture2D swordRight, Texture2D _upProjectile, Texture2D _downProjectile, Texture2D _leftProjectile, Texture2D _rightProjectile)
+        public void loadContent(List<Texture2D> upTexture, List<Texture2D> downTexture, List<Texture2D> rightTexture, List<Texture2D> leftTexture, Texture2D swordUp, Texture2D swordDown, Texture2D swordLeft, Texture2D swordRight, Texture2D _upProjectile, Texture2D _downProjectile, Texture2D _leftProjectile, Texture2D _rightProjectile, Texture2D _upWand, Texture2D _downWand, Texture2D _leftWand, Texture2D _rightWand, Texture2D _upWave, Texture2D _downWave, Texture2D _leftWave, Texture2D _rightWave)
         {
             upAnimation = new AnimatedSprite(upTexture, scale);
             downAnimation = new AnimatedSprite(downTexture, scale);
             leftAnimation = new AnimatedSprite(leftTexture, scale);
             rightAnimation = new AnimatedSprite(rightTexture, scale);
+
             upSword = swordUp;
             downSword = swordDown;
             leftSword = swordLeft;
@@ -102,6 +121,16 @@ namespace ZeldaRoyale
             downProjectile = _downProjectile;
             leftProjectile = _leftProjectile;
             rightProjectile = _rightProjectile;
+
+            upWand = _upWand;
+            downWand = _downWand;
+            leftWand = _leftWand;
+            rightWand = _rightWand;
+
+            upWave = _upWave;
+            downWave = _downWave;
+            leftWave = _leftWave;
+            rightWave = _rightWave;
         }
 
         public void checkBounds ()
@@ -165,7 +194,7 @@ namespace ZeldaRoyale
                 playerVelocity = moveSpeed;
 
                 leftAnimation.playing = false; upAnimation.playing = false; rightAnimation.playing = false;
-            } else if (Keyboard.GetState().IsKeyDown(space))
+            } else if (Keyboard.GetState().IsKeyDown(swordStrike))
             {
                 usingSword = true;
                 switch (orientation)
@@ -188,7 +217,77 @@ namespace ZeldaRoyale
                         break;
                 }
                 leftAnimation.playing = false; rightAnimation.playing = false; downAnimation.playing = false; upAnimation.playing = false;
+            } else if (currentState.IsKeyDown(wandKey))
+            {
+                usingWand = true;
+                switch (orientation)
+                {
+                    case "up":
+                        wandTex = upWand;
+                        break;
+                    case "down":
+                        wandTex = downWand;
+                        break;
+                    case "right":
+                        wandTex = rightWand;
+                        break;
+                    case "left":
+                        wandTex = leftWand;
+                        break;
+                }
             } else
+            {
+
+            }
+
+            if (usingWand && allowWand)
+            {
+                switch (orientation)
+                {
+                    case "up":
+                        swordProjectileList.Add(new SwordProjectile(_texture: upWave, _velocity: new Vector2(0, -wandSpeed - playerVelocity), _position: this.position, _orientation: this.orientation, _damage: this.wandDamge));
+                        break;
+                    case "down":
+                        swordProjectileList.Add(new SwordProjectile(_texture: downWave, _velocity: new Vector2(0, wandSpeed + playerVelocity), _position: this.position, _orientation: this.orientation, _damage: this.wandDamge));
+                        break;
+                    case "right":
+                        swordProjectileList.Add(new SwordProjectile(_texture: rightWave, _velocity: new Vector2(wandSpeed + playerVelocity, 0), _position: this.position, _orientation: this.orientation, _damage: this.wandDamge));
+                        break;
+                    case "left":
+                        swordProjectileList.Add(new SwordProjectile(_texture: leftWave, _velocity: new Vector2(-wandSpeed - playerVelocity, 0), _position: this.position, _orientation: this.orientation, _damage: this.wandDamge));
+                        break;
+                }
+                swordProjectileList[swordProjectileList.Count - 1].orientation = this.orientation.ToString().ToLower();
+                allowWand = false;
+            }
+
+            if (currentState.IsKeyDown(swordBeamKey) && allowShoot)
+            {
+                switch (orientation)
+                {
+                    case "up":
+                        swordProjectileList.Add(new SwordProjectile(_texture: upProjectile, _velocity: new Vector2(0, -projectileSpeed - playerVelocity), _position: this.position, _orientation: this.orientation, _damage: this.projectileDamage));
+                        break;
+                    case "down":
+                        swordProjectileList.Add(new SwordProjectile(_texture: downProjectile, _velocity: new Vector2(0, projectileSpeed + playerVelocity), _position: this.position, _orientation: this.orientation, _damage: this.projectileDamage));
+                        break;
+                    case "right":
+                        swordProjectileList.Add(new SwordProjectile(_texture: rightProjectile, _velocity: new Vector2(projectileSpeed + playerVelocity, 0), _position: this.position, _orientation: this.orientation, _damage: this.projectileDamage));
+                        break;
+                    case "left":
+                        swordProjectileList.Add(new SwordProjectile(_texture: leftProjectile, _velocity: new Vector2(-projectileSpeed - playerVelocity, 0), _position: this.position, _orientation: this.orientation, _damage: this.projectileDamage));
+                        break;
+                }
+                swordProjectileList[swordProjectileList.Count - 1].orientation = this.orientation.ToString().ToLower();
+                allowShoot = false;
+            }
+
+            if (currentState.IsKeyUp(wandKey) && oldState.IsKeyDown(wandKey))
+            {
+                usingWand = false;
+            }
+
+            if (currentState.IsKeyUp(swordBeamKey) && oldState.IsKeyDown(swordBeamKey))
             {
 
             }
@@ -217,42 +316,22 @@ namespace ZeldaRoyale
                 playerVelocity = 0;
             }
 
-            if (currentState.IsKeyUp(space) && oldState.IsKeyDown(space))
+            if (currentState.IsKeyUp(swordStrike) && oldState.IsKeyDown(swordStrike))
             {
                 usingSword = false;
                 swordJabbed = false;
-            }
-
-            if (currentState.IsKeyDown(lshift) && allowShoot)
-            {
-                switch (orientation)
-                {
-                    case "up":
-                        swordProjectileList.Add(new SwordProjectile(_texture: upProjectile, _velocity: new Vector2(0, -projectileSpeed - playerVelocity),_position: this.position, _orientation: this.orientation));
-                        break;
-                    case "down":
-                        swordProjectileList.Add(new SwordProjectile(_texture: downProjectile, _velocity: new Vector2(0, projectileSpeed + playerVelocity), _position: this.position, _orientation: this.orientation));
-                        break;
-                    case "right":
-                        swordProjectileList.Add(new SwordProjectile(_texture: rightProjectile, _velocity: new Vector2(projectileSpeed + playerVelocity, 0), _position: this.position, _orientation: this.orientation));
-                        break;
-                    case "left":
-                        swordProjectileList.Add(new SwordProjectile(_texture: leftProjectile, _velocity: new Vector2(-projectileSpeed-playerVelocity, 0), _position: this.position, _orientation: this.orientation));
-                        break;
-                }
-                swordProjectileList[swordProjectileList.Count - 1].orientation = this.orientation.ToString().ToLower();
-                allowShoot = false;
-            }
-
-            if (currentState.IsKeyUp(lshift) && oldState.IsKeyDown(lshift))
-            {
-                
             }
 
             if (coolDownCount >= coolDownTime)
             {
                 coolDownCount = 0;
                 allowShoot = true;
+            }
+
+            if (coolDownCountWand >= coolDownTimeWand)
+            {
+                coolDownCountWand = 0;
+                allowWand = true;
             }
 
             for (int i = 0; i < swordProjectileList.Count; i++)
@@ -264,7 +343,8 @@ namespace ZeldaRoyale
                 }
             }
 
-            coolDownCount += 1;
+            coolDownCount += gameTime.ElapsedGameTime.TotalSeconds * 50;
+            coolDownCountWand += gameTime.ElapsedGameTime.TotalSeconds * 50;
 
             oldState = currentState;
         }
@@ -366,7 +446,7 @@ namespace ZeldaRoyale
                     {
                         if (this.swordProjectileList[i].checkCollision(enemyPlayer[j].playerCollider))
                         {
-                            enemyPlayer[j].health -= this.projectileDamage;
+                            enemyPlayer[j].health -= (int)swordProjectileList[i].damage;
                             if (enemyPlayer[j].health <= 0)
                             {
                                 enemyPlayer[j].dead = true;
@@ -415,7 +495,7 @@ namespace ZeldaRoyale
                 }
                 else
                 {
-                    if (!usingSword)
+                    if (!usingSword && !usingWand)
                     {
                         switch (orientation)
                         {
@@ -433,7 +513,7 @@ namespace ZeldaRoyale
                                 break;
                         }
                     }
-                    else
+                    else if (usingSword)
                     {
                         Vector2 localSpace = Vector2.Zero;
                         switch (orientation)
@@ -452,6 +532,28 @@ namespace ZeldaRoyale
                                 break;
                         }
                         spriteBatch.Draw(swordTexturePlayer, position: localSpace, scale: scale, color: tint);
+                    } else if (usingWand)
+                    {
+                        Vector2 localSpace = Vector2.Zero;
+                        switch (orientation)
+                        {
+                            case "up":
+                                localSpace = new Vector2(position.X, position.Y - jumpDistance);
+                                break;
+                            case "down":
+                                localSpace = new Vector2(position.X, position.Y);
+                                break;
+                            case "right":
+                                localSpace = new Vector2(position.X, position.Y);
+                                break;
+                            case "left":
+                                localSpace = new Vector2(position.X - jumpDistance, position.Y);
+                                break;
+                        }
+                        spriteBatch.Draw(wandTex, position: localSpace, scale: this.scale, color: tint);
+                    } else
+                    {
+
                     }
                 }
 

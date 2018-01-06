@@ -142,6 +142,14 @@
     <Content Include="Content\projectiles\sword\sword-projectile-left.png" />
     <Content Include="Content\projectiles\sword\sword-projectile-right.png" />
     <Content Include="Content\projectiles\sword\sword-projectile-up.png" />
+    <Content Include="Content\projectiles\wand\wave\zelda-wand-pdown.png" />
+    <Content Include="Content\projectiles\wand\wave\zelda-wand-pleft.png" />
+    <Content Include="Content\projectiles\wand\wave\zelda-wand-pright.png" />
+    <Content Include="Content\projectiles\wand\wave\zelda-wand-pup.png" />
+    <Content Include="Content\projectiles\wand\zelda\zelda-wand-down.png" />
+    <Content Include="Content\projectiles\wand\zelda\zelda-wand-left.png" />
+    <Content Include="Content\projectiles\wand\zelda\zelda-wand-right.png" />
+    <Content Include="Content\projectiles\wand\zelda\zelda-wand-up.png" />
     <Content Include="Content\sword\down\sword-down-left.png" />
     <Content Include="Content\sword\down\sword-down-right.png" />
     <Content Include="Content\sword\left\sword-left.png" />

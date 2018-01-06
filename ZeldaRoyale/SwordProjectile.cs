@@ -12,14 +12,16 @@ namespace ZeldaRoyale.Content
         public Vector2 position;
         public Vector2 scale;
         public String orientation;
+        public float damage;
 
-        public SwordProjectile(Texture2D _texture, Vector2 _velocity, Vector2 _position, String _orientation,float targetX=10, float targetY=10)
+        public SwordProjectile(Texture2D _texture, Vector2 _velocity, Vector2 _position, String _orientation, float _damage, float targetX=10, float targetY=10)
         {
             this.texture = _texture;
             this.velocity = _velocity;
             this.position = _position;
             this.scale = new Vector2(2.5f, 2.5f);
             this.orientation = _orientation;
+            this.damage = _damage;
         }
 
         public void updatePosition(GameTime gameTime)
