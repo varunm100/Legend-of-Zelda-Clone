@@ -18,7 +18,7 @@ namespace ZeldaRoyale
         float rotation;
         float moveSpeed = 200f;
         float jumpDistance = 25f;
-        float projectileSpeed = 250f;
+        float projectileSpeed = 200f;
         float wandSpeed = 500f;
         public bool allowShoot = true;
         public bool allowWand = true;
@@ -93,8 +93,7 @@ namespace ZeldaRoyale
         public String orientation = "down";
         public List<int> removeIndex = new List<int>();
 
-        public Player(Texture2D _texture, Vector2 _position, float _rotation, float targetX, float targetY)
-        {
+        public Player(Texture2D _texture, Vector2 _position, float _rotation, float targetX, float targetY) {
             this.texture = _texture;
             this.position = _position;
             this.rotation = _rotation;
@@ -105,8 +104,7 @@ namespace ZeldaRoyale
 
         public void updateOrigin() { origin = new Vector2(texture.Bounds.Center.X, texture.Bounds.Center.Y); }
 
-        public void loadContent(List<Texture2D> upTexture, List<Texture2D> downTexture, List<Texture2D> rightTexture, List<Texture2D> leftTexture, Texture2D swordUp, Texture2D swordDown, Texture2D swordLeft, Texture2D swordRight, Texture2D _upProjectile, Texture2D _downProjectile, Texture2D _leftProjectile, Texture2D _rightProjectile, Texture2D _upWand, Texture2D _downWand, Texture2D _leftWand, Texture2D _rightWand, Texture2D _upWave, Texture2D _downWave, Texture2D _leftWave, Texture2D _rightWave)
-        {
+        public void loadContent(List<Texture2D> upTexture, List<Texture2D> downTexture, List<Texture2D> rightTexture, List<Texture2D> leftTexture, Texture2D swordUp, Texture2D swordDown, Texture2D swordLeft, Texture2D swordRight, Texture2D _upProjectile, Texture2D _downProjectile, Texture2D _leftProjectile, Texture2D _rightProjectile, Texture2D _upWand, Texture2D _downWand, Texture2D _leftWand, Texture2D _rightWand, Texture2D _upWave, Texture2D _downWave, Texture2D _leftWave, Texture2D _rightWave) {
             upAnimation = new AnimatedSprite(upTexture, scale);
             downAnimation = new AnimatedSprite(downTexture, scale);
             leftAnimation = new AnimatedSprite(leftTexture, scale);
@@ -133,72 +131,57 @@ namespace ZeldaRoyale
             rightWave = _rightWave;
         }
 
-        public void checkBounds ()
-        {
-            if (position.X < 0)
-            {
+        public void checkBounds() {
+            if (position.X < 0) {
                 position.X = 0;
             }
 
-            if (position.X > Game1.windowWidth - 30)
-            {
+            if (position.X > Game1.windowWidth - 30) {
                 position.X = Game1.windowWidth - 30;
             }
 
-            if (position.Y < 0)
-            {
+            if (position.Y < 0) {
                 position.Y = 0;
             }
 
-            if (position.Y > Game1.windowHeight - 30)
-            {
+            if (position.Y > Game1.windowHeight - 30) {
                 position.Y = Game1.windowHeight - 30;
             }
         }
 
-        public void handleInput(GameTime gameTime)
-        {
+        public void handleInput(GameTime gameTime) {
             KeyboardState currentState = Keyboard.GetState();
-            if (Keyboard.GetState().IsKeyDown(right))
-            {
+            if (Keyboard.GetState().IsKeyDown(right)) {
                 position += new Vector2(moveSpeed, 0) * (float)gameTime.ElapsedGameTime.TotalSeconds;
                 orientation = "right";
                 rightAnimation.playing = true;
                 playerVelocity = moveSpeed;
 
                 leftAnimation.playing = false; upAnimation.playing = false; downAnimation.playing = false;
-            }
-            else if (Keyboard.GetState().IsKeyDown(left))
-            {
+            } else if (Keyboard.GetState().IsKeyDown(left)) {
                 position += new Vector2(-moveSpeed, 0) * (float)gameTime.ElapsedGameTime.TotalSeconds;
                 orientation = "left";
                 leftAnimation.playing = true;
                 playerVelocity = moveSpeed;
 
                 rightAnimation.playing = false; upAnimation.playing = false; downAnimation.playing = false;
-            }
-            else if (Keyboard.GetState().IsKeyDown(up))
-            {
+            } else if (Keyboard.GetState().IsKeyDown(up)) {
                 position += new Vector2(0, -moveSpeed) * (float)gameTime.ElapsedGameTime.TotalSeconds;
                 orientation = "up";
                 upAnimation.playing = true;
                 playerVelocity = moveSpeed;
 
                 leftAnimation.playing = false; rightAnimation.playing = false; downAnimation.playing = false;
-            }
-            else if (Keyboard.GetState().IsKeyDown(down))
-            {
+            } else if (Keyboard.GetState().IsKeyDown(down)) {
                 position += new Vector2(0, moveSpeed) * (float)gameTime.ElapsedGameTime.TotalSeconds;
                 orientation = "down";
                 downAnimation.playing = true;
                 playerVelocity = moveSpeed;
 
                 leftAnimation.playing = false; upAnimation.playing = false; rightAnimation.playing = false;
-            } else if (Keyboard.GetState().IsKeyDown(swordStrike))
-            {
+            } else if (Keyboard.GetState().IsKeyDown(swordStrike)) {
                 usingSword = true;
-                switch (orientation)
-                {
+                switch (orientation) {
                     case "up":
                         swordTexturePlayer = upSword;
                         swordCollider = new Rectangle((int)(this.position.X + 16.5), (int)this.position.Y - 25, upSword.Bounds.Width - 10, upSword.Bounds.Height - 5);
@@ -217,11 +200,9 @@ namespace ZeldaRoyale
                         break;
                 }
                 leftAnimation.playing = false; rightAnimation.playing = false; downAnimation.playing = false; upAnimation.playing = false;
-            } else if (currentState.IsKeyDown(wandKey))
-            {
+            } else if (currentState.IsKeyDown(wandKey)) {
                 usingWand = true;
-                switch (orientation)
-                {
+                switch (orientation) {
                     case "up":
                         wandTex = upWand;
                         break;
@@ -235,15 +216,12 @@ namespace ZeldaRoyale
                         wandTex = leftWand;
                         break;
                 }
-            } else
-            {
+            } else {
 
             }
 
-            if (usingWand && allowWand)
-            {
-                switch (orientation)
-                {
+            if (usingWand && allowWand) {
+                switch (orientation) {
                     case "up":
                         swordProjectileList.Add(new SwordProjectile(_texture: upWave, _velocity: new Vector2(0, -wandSpeed - playerVelocity), _position: this.position, _orientation: this.orientation, _damage: this.wandDamge));
                         break;
@@ -261,10 +239,8 @@ namespace ZeldaRoyale
                 allowWand = false;
             }
 
-            if (currentState.IsKeyDown(swordBeamKey) && allowShoot)
-            {
-                switch (orientation)
-                {
+            if (currentState.IsKeyDown(swordBeamKey) && allowShoot) {
+                switch (orientation) {
                     case "up":
                         swordProjectileList.Add(new SwordProjectile(_texture: upProjectile, _velocity: new Vector2(0, -projectileSpeed - playerVelocity), _position: this.position, _orientation: this.orientation, _damage: this.projectileDamage));
                         break;
@@ -282,63 +258,52 @@ namespace ZeldaRoyale
                 allowShoot = false;
             }
 
-            if (currentState.IsKeyUp(wandKey) && oldState.IsKeyDown(wandKey))
-            {
+            if (currentState.IsKeyUp(wandKey) && oldState.IsKeyDown(wandKey)) {
                 usingWand = false;
             }
 
-            if (currentState.IsKeyUp(swordBeamKey) && oldState.IsKeyDown(swordBeamKey))
-            {
+            if (currentState.IsKeyUp(swordBeamKey) && oldState.IsKeyDown(swordBeamKey)) {
 
             }
 
-            if (currentState.IsKeyUp(right) && oldState.IsKeyDown(right))
-            {
+            if (currentState.IsKeyUp(right) && oldState.IsKeyDown(right)) {
                 rightAnimation.playing = false;
                 playerVelocity = 0;
             }
 
-            if (currentState.IsKeyUp(left) && oldState.IsKeyDown(left))
-            {
+            if (currentState.IsKeyUp(left) && oldState.IsKeyDown(left)) {
                 leftAnimation.playing = false;
                 playerVelocity = 0;
             }
 
-            if (currentState.IsKeyUp(up) && oldState.IsKeyDown(up))
-            {
+            if (currentState.IsKeyUp(up) && oldState.IsKeyDown(up)) {
                 upAnimation.playing = false;
                 playerVelocity = 0;
             }
 
-            if (currentState.IsKeyUp(down) && oldState.IsKeyDown(down))
-            {
+            if (currentState.IsKeyUp(down) && oldState.IsKeyDown(down)) {
                 downAnimation.playing = false;
                 playerVelocity = 0;
             }
 
-            if (currentState.IsKeyUp(swordStrike) && oldState.IsKeyDown(swordStrike))
-            {
+            if (currentState.IsKeyUp(swordStrike) && oldState.IsKeyDown(swordStrike)) {
                 usingSword = false;
                 swordJabbed = false;
             }
 
-            if (coolDownCount >= coolDownTime)
-            {
+            if (coolDownCount >= coolDownTime) {
                 coolDownCount = 0;
                 allowShoot = true;
             }
 
-            if (coolDownCountWand >= coolDownTimeWand)
-            {
+            if (coolDownCountWand >= coolDownTimeWand) {
                 coolDownCountWand = 0;
                 allowWand = true;
             }
 
-            for (int i = 0; i < swordProjectileList.Count; i++)
-            {
+            for (int i = 0; i < swordProjectileList.Count; i++) {
                 swordProjectileList[i].updatePosition(gameTime);
-                if (swordProjectileList[i].position.X < 0 || swordProjectileList[i].position.X > Game1.windowWidth || swordProjectileList[i].position.Y < 0 || swordProjectileList[i].position.Y > Game1.windowHeight)
-                {
+                if (swordProjectileList[i].position.X < 0 || swordProjectileList[i].position.X > Game1.windowWidth || swordProjectileList[i].position.Y < 0 || swordProjectileList[i].position.Y > Game1.windowHeight) {
                     swordProjectileList.RemoveAt(i);
                 }
             }
@@ -349,64 +314,44 @@ namespace ZeldaRoyale
             oldState = currentState;
         }
 
-        public void Update(GameTime gameTime, List<Octorok> enemyCollider, List<Player> enemyPlayer, bool handleInputbool)
-        {
+        public void Update(GameTime gameTime, List<Octorok> enemyCollider, List<Player> enemyPlayer, bool handleInputbool) {
             playerCollider = new Rectangle((int)this.position.X + 5, (int)this.position.Y + 1, (int)(upAnimation.textureList[0].Width * 1.9f), (int)(upAnimation.textureList[0].Height * 1.9f));
             updateOrigin();
             checkBounds();
-            if (!blink)
-            {
-                if (handleInputbool)
-                {
+            if (!blink) {
+                if (handleInputbool) {
                     handleInput(gameTime);
                 }
-            } else
-            {
+            } else {
                 rightAnimation.playing = false; leftAnimation.playing = false; upAnimation.playing = false; downAnimation.playing = false;
             }
 
-            if (enemyCollider.Any())
-            {
+            if (enemyCollider.Any()) {
                 removeIndex.Clear();
-                for (int i = 0; i < swordProjectileList.Count; i++)
-                {
-                    for (int j = 0; j < enemyCollider.Count; j++)
-                    {
-                        try
-                        {
-                            if (swordProjectileList[i].checkCollision(enemyCollider[j].mainCollider))
-                            {
+                for (int i = 0; i < swordProjectileList.Count; i++) {
+                    for (int j = 0; j < enemyCollider.Count; j++) {
+                        try {
+                            if (swordProjectileList[i].checkCollision(enemyCollider[j].mainCollider)) {
                                 swordProjectileList.RemoveAt(i);
                                 enemyCollider[j].health -= this.swordDamage;
-                                if (enemyCollider[j].health <= 0)
-                                {
+                                if (enemyCollider[j].health <= 0) {
                                     enemyCollider[j].alive = false;
                                 }
                             }
-                        }
-                        catch (ArgumentOutOfRangeException)
-                        {
+                        } catch (ArgumentOutOfRangeException) {
 
-                        }
-                        finally
-                        {
+                        } finally {
 
                         }
                     }
                 }
 
-                if (usingSword && !blink && !swordJabbed)
-                {
-                    for (int j = 0; j < enemyCollider.Count; j++)
-                    {
-                        if (swordCollider.Intersects(enemyCollider[j].mainCollider))
-                        {
-                            if (!(enemyCollider[j].health - swordDamage <= 0))
-                            {
+                if (usingSword && !blink && !swordJabbed) {
+                    for (int j = 0; j < enemyCollider.Count; j++) {
+                        if (swordCollider.Intersects(enemyCollider[j].mainCollider)) {
+                            if (!(enemyCollider[j].health - swordDamage <= 0)) {
                                 enemyCollider[j].health -= swordDamage;
-                            }
-                            else
-                            {
+                            } else {
                                 enemyCollider[j].alive = false;
                             }
                             swordJabbed = true;
@@ -414,22 +359,16 @@ namespace ZeldaRoyale
                     }
                 }
 
-                if (!blink)
-                {
-                    for (int i = 0; i < enemyCollider.Count; i++)
-                    {
-                        if (enemyCollider[i].mainCollider.Intersects(playerCollider))
-                        {
+                if (!blink) {
+                    for (int i = 0; i < enemyCollider.Count; i++) {
+                        if (enemyCollider[i].mainCollider.Intersects(playerCollider)) {
                             blink = true;
                             upAnimation.playing = false; downAnimation.playing = false; rightAnimation.playing = false; leftAnimation.playing = false;
                             enemyCollider[i].playerBlink = true;
                             playerBlinkIndex = i;
-                            if (!(health - enemyCollider[i].damage <= 0))
-                            {
+                            if (!(health - enemyCollider[i].damage <= 0)) {
                                 health -= enemyCollider[i].damage;
-                            }
-                            else
-                            {
+                            } else {
                                 this.dead = true;
                             }
                         }
@@ -437,18 +376,13 @@ namespace ZeldaRoyale
                 }
             }
 
-            if (enemyPlayer.Any())
-            {
+            if (enemyPlayer.Any()) {
                 removeIndex.Clear();
-                for (int i = 0; i < swordProjectileList.Count; i++)
-                {
-                    for (int j = 0; j < enemyPlayer.Count; j++)
-                    {
-                        if (this.swordProjectileList[i].checkCollision(enemyPlayer[j].playerCollider))
-                        {
+                for (int i = 0; i < swordProjectileList.Count; i++) {
+                    for (int j = 0; j < enemyPlayer.Count; j++) {
+                        if (this.swordProjectileList[i].checkCollision(enemyPlayer[j].playerCollider)) {
                             enemyPlayer[j].health -= (int)swordProjectileList[i].damage;
-                            if (enemyPlayer[j].health <= 0)
-                            {
+                            if (enemyPlayer[j].health <= 0) {
                                 enemyPlayer[j].dead = true;
                             }
                             enemyPlayer[j].blink = true;
@@ -458,20 +392,15 @@ namespace ZeldaRoyale
                     }
                 }
 
-                foreach (var i in removeIndex)
-                {
+                foreach (var i in removeIndex) {
                     swordProjectileList.RemoveAt(i);
                 }
 
-                if (usingSword && !blink && !swordJabbed)
-                {
-                    for (int j = 0; j < enemyPlayer.Count; j++)
-                    {
-                        if (swordCollider.Intersects(enemyPlayer[j].playerCollider))
-                        {
+                if (usingSword && !blink && !swordJabbed) {
+                    for (int j = 0; j < enemyPlayer.Count; j++) {
+                        if (swordCollider.Intersects(enemyPlayer[j].playerCollider)) {
                             enemyPlayer[j].health -= swordDamage;
-                            if (enemyPlayer[j].health <= 0)
-                            {
+                            if (enemyPlayer[j].health <= 0) {
                                 enemyPlayer[j].dead = true;
                             }
                             swordJabbed = true;
@@ -485,20 +414,13 @@ namespace ZeldaRoyale
             upAnimation.Update(); downAnimation.Update(); rightAnimation.Update(); leftAnimation.Update();
         }
 
-        public void Draw(SpriteBatch spriteBatch, List<Octorok> listOctorok, List<Player> enemyPlayer,GameTime gameTime, Color tint)
-        {
-            if (!blink)
-            {
-                if (upAnimation.playing || downAnimation.playing || rightAnimation.playing || leftAnimation.playing)
-                {
+        public void Draw(SpriteBatch spriteBatch, List<Octorok> listOctorok, List<Player> enemyPlayer, GameTime gameTime, Color tint) {
+            if (!blink) {
+                if (upAnimation.playing || downAnimation.playing || rightAnimation.playing || leftAnimation.playing) {
                     upAnimation.Draw(spriteBatch, position, tint); downAnimation.Draw(spriteBatch, position, tint); rightAnimation.Draw(spriteBatch, position, tint); leftAnimation.Draw(spriteBatch, position, tint);
-                }
-                else
-                {
-                    if (!usingSword && !usingWand)
-                    {
-                        switch (orientation)
-                        {
+                } else {
+                    if (!usingSword && !usingWand) {
+                        switch (orientation) {
                             case "up":
                                 spriteBatch.Draw(upAnimation.textureList[upAnimation.currentTextureIndex], position: position, scale: scale, color: tint);
                                 break;
@@ -512,12 +434,9 @@ namespace ZeldaRoyale
                                 spriteBatch.Draw(leftAnimation.textureList[leftAnimation.currentTextureIndex], position: position, scale: scale, color: tint);
                                 break;
                         }
-                    }
-                    else if (usingSword)
-                    {
+                    } else if (usingSword) {
                         Vector2 localSpace = Vector2.Zero;
-                        switch (orientation)
-                        {
+                        switch (orientation) {
                             case "up":
                                 localSpace = new Vector2(position.X, position.Y - jumpDistance);
                                 break;
@@ -532,11 +451,9 @@ namespace ZeldaRoyale
                                 break;
                         }
                         spriteBatch.Draw(swordTexturePlayer, position: localSpace, scale: scale, color: tint);
-                    } else if (usingWand)
-                    {
+                    } else if (usingWand) {
                         Vector2 localSpace = Vector2.Zero;
-                        switch (orientation)
-                        {
+                        switch (orientation) {
                             case "up":
                                 localSpace = new Vector2(position.X, position.Y - jumpDistance);
                                 break;
@@ -551,37 +468,28 @@ namespace ZeldaRoyale
                                 break;
                         }
                         spriteBatch.Draw(wandTex, position: localSpace, scale: this.scale, color: tint);
-                    } else
-                    {
+                    } else {
 
                     }
                 }
 
-                for (int i = 0; i < swordProjectileList.Count; i++)
-                {
+                for (int i = 0; i < swordProjectileList.Count; i++) {
                     swordProjectileList[i].Draw(spriteBatch, tint);
                 }
-            } else
-            {
-                if (countBlink <= 0)
-                {
+            } else {
+                if (countBlink <= 0) {
                     blink = false;
-                    try
-                    {
+                    try {
                         listOctorok[playerBlinkIndex].playerBlink = false;
-                    } catch (ArgumentException)
-                    {
+                    } catch (ArgumentException) {
 
-                    } finally
-                    {
+                    } finally {
 
                     }
                     countBlink = initialCountBlink;
                 }
-                if (countBlink % 10 == 0)
-                {
-                    switch (this.hitOrientation.ToString().ToLower())
-                    {
+                if (countBlink % 10 == 0) {
+                    switch (this.hitOrientation.ToString().ToLower()) {
                         case "up":
                             position += new Vector2(0, -1) * (float)(gameTime.ElapsedGameTime.TotalMilliseconds / 100) * 100;
                             spriteBatch.Draw(upAnimation.textureList[upAnimation.currentTextureIndex], position: position, scale: scale, color: loopColorBlink[blinkColorIndex]);
@@ -607,8 +515,7 @@ namespace ZeldaRoyale
             }
         }
 
-        public static double degreesToRadians(double i)
-        {
+        public static double degreesToRadians(double i) {
             return i * (Math.PI / 180);
         }
     }

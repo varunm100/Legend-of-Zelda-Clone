@@ -14,8 +14,7 @@ namespace ZeldaRoyale.Content
         public String orientation;
         public float damage;
 
-        public SwordProjectile(Texture2D _texture, Vector2 _velocity, Vector2 _position, String _orientation, float _damage, float targetX=10, float targetY=10)
-        {
+        public SwordProjectile(Texture2D _texture, Vector2 _velocity, Vector2 _position, String _orientation, float _damage, float targetX = 10, float targetY = 10) {
             this.texture = _texture;
             this.velocity = _velocity;
             this.position = _position;
@@ -24,18 +23,15 @@ namespace ZeldaRoyale.Content
             this.damage = _damage;
         }
 
-        public void updatePosition(GameTime gameTime)
-        {
+        public void updatePosition(GameTime gameTime) {
             this.position += this.velocity * (float)gameTime.ElapsedGameTime.TotalSeconds;
         }
 
-        public bool checkCollision(Rectangle inCollider)
-        {
-            return (new Rectangle((int)this.position.X,(int) this.position.Y, (int)(this.texture.Width*this.scale.X), (int)(this.texture.Height*this.scale.Y))).Intersects(inCollider);
+        public bool checkCollision(Rectangle inCollider) {
+            return (new Rectangle((int)this.position.X, (int)this.position.Y, (int)(this.texture.Width * this.scale.X), (int)(this.texture.Height * this.scale.Y))).Intersects(inCollider);
         }
 
-        public void Draw(SpriteBatch spriteBatch, Color tint)
-        {
+        public void Draw(SpriteBatch spriteBatch, Color tint) {
             spriteBatch.Draw(texture: this.texture, position: this.position, scale: this.scale, color: tint);
         }
     }

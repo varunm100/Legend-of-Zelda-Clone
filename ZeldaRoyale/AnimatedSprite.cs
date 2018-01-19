@@ -17,8 +17,7 @@ namespace ZeldaRoyale
         public int count = -1;
         public Vector2 renderScale;
 
-        public AnimatedSprite(List <Texture2D> inputList, Vector2 _renderScale, long _countTill = 12)
-        {
+        public AnimatedSprite(List<Texture2D> inputList, Vector2 _renderScale, long _countTill = 12) {
             this.textureList = inputList;
             this.currentFrame = 0;
             this.totalFrames = inputList.Count;
@@ -26,8 +25,7 @@ namespace ZeldaRoyale
             this.renderScale = _renderScale;
         }
 
-        public AnimatedSprite(List<Texture2D> inputList, Vector2 _renderScale, int _count, long _countTill = 12)
-        {
+        public AnimatedSprite(List<Texture2D> inputList, Vector2 _renderScale, int _count, long _countTill = 12) {
             this.textureList = inputList;
             this.currentFrame = 0;
             this.totalFrames = inputList.Count;
@@ -36,35 +34,25 @@ namespace ZeldaRoyale
             this.count = _count;
         }
 
-        public void Update()
-        {
-            if (playing)
-            {
+        public void Update() {
+            if (playing) {
                 currentFrame++;
                 if (currentFrame == countTill)
                     currentFrame = 0;
             }
         }
 
-        public void Draw(SpriteBatch spriteBatch, Vector2 location, Color tint)
-        {
-            if (playing)
-            {
-                if (currentFrame % countTill == 0)
-                {
+        public void Draw(SpriteBatch spriteBatch, Vector2 location, Color tint) {
+            if (playing) {
+                if (currentFrame % countTill == 0) {
                     currentTextureIndex += 1;
                 }
-                if (!(currentTextureIndex > (textureList.Count - 1)))
-                {
+                if (!(currentTextureIndex > (textureList.Count - 1))) {
                     spriteBatch.Draw(texture: textureList[currentTextureIndex], position: location, scale: renderScale, color: tint);
-                }
-                else
-                {
-                    if (count <= 0)
-                    {
+                } else {
+                    if (count <= 0) {
                         currentTextureIndex = 0;
-                    } else
-                    {
+                    } else {
                         this.playing = false;
                     }
                 }

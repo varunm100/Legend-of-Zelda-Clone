@@ -21,50 +21,39 @@ namespace ZeldaRoyale
         public Rectangle mainCollider;
         public bool playerBlink = false;
         public int health = 50;
-        public int damage = 5; 
+        public int damage = 5;
 
-        public Octorok(Texture2D _texture, Vector2 _position, List<Vector2> _listPosition)
-        {
+        public Octorok(Texture2D _texture, Vector2 _position, List<Vector2> _listPosition) {
             this.texture = _texture;
             this.position = _position;
             this.listPosition = _listPosition;
             this.currentPositionIndex = 0;
         }
 
-        public void goToAllPositions()
-        {
-            if (this.startAStar)
-            {
-                if (this.currentPositionIndex < listPosition.Count && moving && !playerBlink)
-                {
+        public void goToAllPositions() {
+            if (this.startAStar) {
+                if (this.currentPositionIndex < listPosition.Count && moving && !playerBlink) {
                     position = listPosition[this.currentPositionIndex];
                     this.currentPositionIndex += 2;
-                }
-                else
-                {
+                } else {
                     this.moving = false;
                     this.currentPositionIndex = 0;
                 }
             }
         }
 
-        public void startPathFinding(Vector2 _position)
-        {
-            if (Vector2.Distance(_position, this.position) <= StartrangeRadius)
-            {
+        public void startPathFinding(Vector2 _position) {
+            if (Vector2.Distance(_position, this.position) <= StartrangeRadius) {
                 startAStar = true;
-            } else if (Vector2.Distance(_position, this.position) >= EndrangeRadius)
-            {
+            } else if (Vector2.Distance(_position, this.position) >= EndrangeRadius) {
                 startAStar = false;
-            } else
-            {
+            } else {
 
             }
         }
 
-        public void Draw(SpriteBatch spriteBatch)
-        {
-            spriteBatch.Draw(texture: this.texture, position: this.position, scale: new Vector2(scaleDivisor,scaleDivisor));
+        public void Draw(SpriteBatch spriteBatch) {
+            spriteBatch.Draw(texture: this.texture, position: this.position, scale: new Vector2(scaleDivisor, scaleDivisor));
         }
     }
 }

@@ -36,21 +36,18 @@ namespace ZeldaRoyale
         List<Player> zeldaEnemy = new List<Player>();
         List<Player> zelda1Enemy = new List<Player>();
 
-        public Game1()
-        {
+        public Game1() {
             graphics = new GraphicsDeviceManager(this);
             graphics.IsFullScreen = true;
             graphics.ApplyChanges();
             Content.RootDirectory = "Content";
         }
 
-        protected override void Initialize()
-        {
+        protected override void Initialize() {
             base.Initialize();
         }
 
-        protected override void LoadContent()
-        {
+        protected override void LoadContent() {
             spriteBatch = new SpriteBatch(GraphicsDevice);
 
             windowWidth = GraphicsDevice.Viewport.Width;
@@ -132,12 +129,10 @@ namespace ZeldaRoyale
 
             List<Vector2> path = aStar.getPath(new Vector2(0, 0), zelda.position);
 
-            if (!spawnOctorok)
-            {
+            if (!spawnOctorok) {
                 numOctorok = 0;
             }
-            for (int i = 0; i < numOctorok; i++)
-            {
+            for (int i = 0; i < numOctorok; i++) {
                 octorokList.Add(new Octorok(this.Content.Load<Texture2D>("octorok-0"), new Vector2(i * (windowWidth / numOctorok), 0), path));
             }
             whiteTexture = new Texture2D(GraphicsDevice, 1, 1);
@@ -147,48 +142,40 @@ namespace ZeldaRoyale
             backgroundScale = new Vector2((windowWidth / background.Width), (windowHeight / background.Height));
         }
 
-        protected override void UnloadContent()
-        {
+        protected override void UnloadContent() {
 
         }
 
-        protected override void Update(GameTime gameTime)
-        {
+        protected override void Update(GameTime gameTime) {
             windowWidth = GraphicsDevice.Viewport.Bounds.Width;
             windowHeight = GraphicsDevice.Viewport.Bounds.Height;
             if (GamePad.GetState(PlayerIndex.One).Buttons.Back == ButtonState.Pressed || Keyboard.GetState().IsKeyDown(Keys.Escape))
                 Exit();
             backgroundScale = new Vector2((windowWidth / background.Width), (windowHeight / background.Height));
-            if (spawnOctorok)
-            {
-                for (int i = 0; i < octorokList.Count; i++)
-                {
+            if (spawnOctorok) {
+                for (int i = 0; i < octorokList.Count; i++) {
                     octorokList[i].mainCollider = new Rectangle((int)octorokList[i].position.X, (int)octorokList[i].position.Y, (int)(octorokList[i].texture.Bounds.Width * octorokList[i].scaleDivisor), (int)(octorokList[i].texture.Bounds.Height * octorokList[i].scaleDivisor));
                 }
             }
-            if (spawnOctorok)
-            {
-                for (int i = 0; i < octorokList.Count; i++)
-                {
+            if (spawnOctorok) {
+                for (int i = 0; i < octorokList.Count; i++) {
                     octorokList[i].goToAllPositions();
                     octorokList[i].startPathFinding(zelda.position);
                     enemyAStarCount += 1;
-                    if (enemyAStarCount % 2 == 0)
-                    {
+                    if (enemyAStarCount % 2 == 0) {
                         octorokList[i].listPosition = aStar.getPath(octorokList[i].position, zelda.position);
                         octorokList[i].moving = true;
                         octorokList[i].currentPositionIndex = 0;
                         enemyAStarCount = 0;
                     }
-                    if (!octorokList[i].alive)
-                    {
+                    if (!octorokList[i].alive) {
                         octorokList.RemoveAt(i);
                     }
                 }
             }
 
-            //Console.WriteLine("Player 1 Health: " + zelda.health);
-            //Console.WriteLine("Player 2 Health: " + zelda1.health);
+            Console.WriteLine("Player 1 Health: " + zelda.health);
+            Console.WriteLine("Player 2 Health: " + zelda1.health);
             if (zelda.dead && !gameOver) { Console.WriteLine("Player 2 Wins!"); gameOver = true; winningString = "BOOM! P2 WRECKS P1!"; }
             if (zelda1.dead && !gameOver) { Console.WriteLine("Player 1 Wins!"); gameOver = true; winningString = "BOOM! P1 WRECKS P2"; }
 
@@ -198,18 +185,15 @@ namespace ZeldaRoyale
             base.Update(gameTime);
         }
 
-        protected override void Draw(GameTime gameTime)
-        {
+        protected override void Draw(GameTime gameTime) {
             GraphicsDevice.Clear(Color.Black);
 
             spriteBatch.Begin(new SpriteSortMode(), null, SamplerState.PointClamp, null, null);
             spriteBatch.Draw(texture: background, position: new Vector2(windowWidth / 2, windowHeight / 2), origin: new Vector2(background.Bounds.Center.X, background.Bounds.Center.Y), scale: backgroundScale);
-            if (!gameOver)
-            {
+            if (!gameOver) {
                 zelda.Draw(spriteBatch, octorokList, zeldaEnemy, gameTime, Color.White);
                 zelda1.Draw(spriteBatch, octorokList, zelda1Enemy, gameTime, Color.White);
-                for (int i = 0; i < octorokList.Count; i++)
-                {
+                for (int i = 0; i < octorokList.Count; i++) {
                     octorokList[i].Draw(spriteBatch);
                 }
                 double zeldaWidth = ((double)zelda.health / (double)zelda.totalHealth) * ((double)2 * (double)contrastHearts.Width);
@@ -223,22 +207,18 @@ namespace ZeldaRoyale
                 spriteBatch.Draw(texture: contrastHearts, position: new Vector2(0, 0), scale: new Vector2(2, 2));
                 spriteBatch.Draw(texture: contrastHearts, position: new Vector2(windowWidth - (2 * contrastHearts.Width), 0), scale: new Vector2(2, 2));
             }
-            else
-            {
+            else {
                 spriteBatch.DrawString(spriteFont: Game1.mainFont, text: winningString, position: new Vector2((windowWidth / 2) - 250, windowHeight / 2), color: Color.Red, rotation: (float)Player.degreesToRadians(1), origin: new Vector2(0, 0), scale: gameOverScaleInt, effects: new SpriteEffects(), layerDepth: 1);
                 timePerScale += 1;
-                if (timePerScale % totalTime == 0)
-                {
+                if (timePerScale % totalTime == 0) {
                     gameOverScaleInt += 0.1f;
                     timePerScale = 1;
                 }
-                if (gameOverScaleInt >= 2)
-                {
+                if (gameOverScaleInt >= 2) {
                     gameOverScaleInt = 1;
                 }
                 gameOverRotationInt += 1;
-                if (gameOverRotationInt >= 360)
-                {
+                if (gameOverRotationInt >= 360) {
                     gameOverRotationInt = 0;
                 }
             }
