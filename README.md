@@ -1,5 +1,5 @@
 # Legend of Zelda Clone(*Kind of*)
-### <b>A 2-player game where you play as link from The Legend of Zelda series and battle each other using his weapons/tools from the game. This was implemented in C# using the XNA/Monogame framework.</b>
+### <b>A 2-player PVP version of the Legend of Zelda, even includes music from the original game.</b>
 ![zeldanes](https://user-images.githubusercontent.com/19439575/34623893-1390d66c-f279-11e7-9d2c-4bc7c80c8168.gif) <br />
 <b>Controls <br />
 (Player 1) <br />
